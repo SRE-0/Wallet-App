@@ -11,6 +11,7 @@ import { createStyles } from './styles';
 import { useCard } from "../../hooks/useCard";
 import { useLastTransaction } from "../../hooks/useLastTransaction";
 import { formatTransactionDateSlim } from '../../utils/date';
+import { ActionButton } from './ActionButton';
 
 interface BalanceWidgetProps {
   userId: string;
@@ -85,7 +86,10 @@ export function BalanceWidget({ userId, cardId }: BalanceWidgetProps) {
             <View>
               <Text style={styles.metaLabel}>Last Trx.</Text>
               <Text style={styles.metaValue}>
-                {formatTransactionDateSlim(lastTransaction.date)}
+                {lastTransaction?.date
+                  ? formatTransactionDateSlim(lastTransaction.date)
+                  : 'No data'
+                }
               </Text>
             </View>
           </View>
@@ -97,14 +101,7 @@ export function BalanceWidget({ userId, cardId }: BalanceWidgetProps) {
               <Text style={styles.metaValue}>American 1</Text>
             </View>
 
-            <TouchableOpacity style={styles.actionButton_}>
-              <FontAwesome6
-                style={styles.actionIcon}
-                name="circle-plus"
-                size={20}
-              />
-              <Text style={styles.actionLabelRow}>Add Card</Text>
-            </TouchableOpacity>
+            <ActionButton variant="row" name="circle-plus" label="Add Card" />
           </View>    
           
         </View>
@@ -113,32 +110,11 @@ export function BalanceWidget({ userId, cardId }: BalanceWidgetProps) {
 
       {/* Action buttons */}
       <View style={styles.actionsRow}>
-        <TouchableOpacity style={styles.actionButton}>
-          <FontAwesome6
-            style={styles.actionIcon}
-            name="money-bills"
-            size={24}
-          />
-          <Text style={styles.actionLabel}>Add Transaction</Text>
-        </TouchableOpacity>
+        <ActionButton name="money-bills" label="Add Transaction" />
 
-        <TouchableOpacity style={styles.actionButton}>
-          <FontAwesome6
-            style={styles.actionIcon}
-            name="wallet"
-            size={24}
-          />
-          <Text style={styles.actionLabel}>wallet</Text>
-        </TouchableOpacity>
+        <ActionButton name="wallet" label="Wallet" />
 
-        <TouchableOpacity style={styles.actionButton}>
-          <FontAwesome6
-            style={styles.actionIcon}
-            name="money-bill-transfer"
-            size={24}
-          />
-          <Text style={styles.actionLabel}>exchange</Text>
-        </TouchableOpacity>
+        <ActionButton name="money-bill-transfer" label="Exchange" />
       </View>
     </View>
   );

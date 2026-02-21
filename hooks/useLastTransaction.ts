@@ -21,6 +21,19 @@ import { Transaction } from "../models/transaction.model";
  * @param userId Authenticated user ID
  * @param cardId Card ID
  */
+/**
+ * useLastTransaction
+ *
+ * Subscribes to the most recent transaction for a card (limit=1) and
+ * returns it along with a loading flag. Useful for compact UI widgets.
+ *
+ * Usage:
+ * const { lastTransaction, loading } = useLastTransaction(userId, cardId)
+ *
+ * @param userId - Authenticated user ID
+ * @param cardId - Card ID
+ * @returns Object with `lastTransaction` (Transaction | null) and `loading` (boolean)
+ */
 export const useLastTransaction = (
   userId: string,
   cardId: string

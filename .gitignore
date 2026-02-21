@@ -1,3 +1,21 @@
+node_modules/
+.expo/
+.expo-shared/
+android/
+ios/
+web-build/
+build/
+dist/
+.vscode/
+npm-debug.log
+yarn-error.log
+pnpm-lock.yaml
+package-lock.json
+.DS_Store
+.env
+.env.*
+# Firebase local files
+firebase-debug.log
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 # dependencies

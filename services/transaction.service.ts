@@ -34,6 +34,21 @@ import { Transaction } from "../models/transaction.model";
  * @param cardId - Card where transaction will be stored
  * @param transaction - Transaction data without ID
  */
+/**
+ * addTransaction
+ *
+ * Adds a transaction document to Firestore under
+ * users/{userId}/cards/{cardId}/transactions and updates the parent card
+ * document totals atomically.
+ *
+ * Usage:
+ * await addTransaction(userId, cardId, { amount, date, name, category, tax })
+ *
+ * @param userId - Authenticated user ID
+ * @param cardId - Card document ID where the transaction will be stored
+ * @param transaction - Transaction payload (without `id`)
+ * @returns Promise<void>
+ */
 export const addTransaction = async (
   userId: string,
   cardId: string,
@@ -76,6 +91,21 @@ export const addTransaction = async (
  * @param callback - Triggered whenever data changes
  * @returns Unsubscribe function
  */
+/**
+ * subscribeToTransactions
+ *
+ * Subscribes to realtime updates for a card's transactions ordered by date
+ * descending. The provided callback is invoked with the mapped `Transaction[]`.
+ *
+ * Usage:
+ * const unsubscribe = subscribeToTransactions(userId, cardId, (txs) => setTxs(txs));
+ * // later: unsubscribe();
+ *
+ * @param userId - Authenticated user ID
+ * @param cardId - Card ID
+ * @param callback - Function called with the latest transactions array
+ * @returns Unsubscribe function to stop listening
+ */
 export const subscribeToTransactions = (
   userId: string,
   cardId: string,
@@ -110,6 +140,19 @@ export const subscribeToTransactions = (
  * 
  * @param userId - Authenticated user ID
  * @param cardId - Card ID
+ */
+/**
+ * seedTransactions
+ *
+ * Development helper that inserts a small set of sample transactions into
+ * the specified card. Intended for local/dev testing only.
+ *
+ * Usage:
+ * await seedTransactions(userId, cardId)
+ *
+ * @param userId - Authenticated user ID
+ * @param cardId - Card ID
+ * @returns Promise<void>
  */
 export const seedTransactions = async (
   userId: string,

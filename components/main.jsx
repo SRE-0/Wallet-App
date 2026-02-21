@@ -19,11 +19,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTransactions } from '../hooks/useTransactions';
 import { TransactionItem } from './transaction/TransactionItem';
 import { TransactionsListWidget } from './transaction/transaction-widget';
+import { createMainStyles } from './main.styles';
 
 export function Main() {
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
-  const styles = createStyles(colors);
+  const styles = createMainStyles(colors);
 
   const userId = "demoUser";
   const cardId = "demoCard_sexo1"; // Example card ID for fetching transactions
@@ -55,42 +56,4 @@ export function Main() {
   );
 }
 
-/**
- * Creates themed styles.
- */
-const createStyles = (colors) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: colors.background,
-    },
-
-    card_background: {
-      backgroundColor: colors.surfaceContainer,
-      height: '90%',
-      width: '100%',
-      borderRadius: 24,
-    },
-
-    button: {
-      backgroundColor: colors.primary,
-      padding: 12,
-      borderRadius: 12,
-      marginVertical: 16,
-      alignItems: 'center',
-    },
-
-    buttonText: {
-      color: colors.onPrimary,
-      fontWeight: '600',
-    },
-
-    image: {
-      width: 120,
-      height: 100,
-      marginVertical: 12,
-      borderRadius: 8,
-    },
-  });
+// Styles moved to components/main.styles.ts as `createMainStyles`

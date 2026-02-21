@@ -9,6 +9,20 @@ import { db } from "../firebase/config";
  * @param cardId Card ID
  * @param cardName Display name of the card
  */
+/**
+ * ensureCardExists
+ *
+ * Verifies that the card document exists for a given user. If the document
+ * does not exist it will be created with sensible default values.
+ *
+ * Usage:
+ * await ensureCardExists(userId, cardId, 'My Card')
+ *
+ * @param userId - Authenticated user ID
+ * @param cardId - Card document ID
+ * @param cardName - Optional display name used when creating the card
+ * @returns Promise<void>
+ */
 export const ensureCardExists = async (
   userId: string,
   cardId: string,

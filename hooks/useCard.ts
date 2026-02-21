@@ -14,6 +14,19 @@ import { ensureCardExists } from "../services/card.service";
  * @param userId Authenticated user ID
  * @param cardId Card ID
  */
+/**
+ * useCard
+ *
+ * React hook that ensures the card exists and subscribes to the card
+ * document in Firestore. Returns the card data and a loading flag.
+ *
+ * Usage:
+ * const { card, loading } = useCard(userId, cardId)
+ *
+ * @param userId - Authenticated user ID
+ * @param cardId - Card document ID
+ * @returns Object with `card` (Card | null) and `loading` (boolean)
+ */
 export const useCard = (userId: string, cardId: string) => {
   const [card, setCard] = useState<Card | null>(null);
   const [loading, setLoading] = useState(true);

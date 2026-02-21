@@ -69,3 +69,37 @@ export const createStyles = (colors) =>
       textAlign: 'left',
     },
   });
+
+/**
+ * createListStyles
+ *
+ * Styles specific to the transactions list widget. Kept alongside the
+ * TransactionItem styles so both components share a single style module.
+ *
+ * @param colors - Theme color palette
+ */
+export const createListStyles = (colors: any) =>
+  StyleSheet.create({
+    contentContainer: {
+      paddingHorizontal: 24,
+    },
+
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+
+    button: {
+      backgroundColor: colors.primary,
+      padding: 12,
+      borderRadius: 12,
+      marginVertical: 16,
+      alignItems: 'center',
+    },
+
+    buttonText: {
+      color: colors.onPrimary,
+      fontWeight: '600',
+    },
+  });

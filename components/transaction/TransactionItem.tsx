@@ -1,6 +1,15 @@
 /**
- * Renders a single transaction item.
- * This component is reusable and focused only on presentation.
+ * TransactionItem
+ *
+ * Presentation component that renders a single `Transaction` inside a
+ * styled row. This component does not perform data fetching and expects the
+ * full `Transaction` object to be passed as a prop.
+ *
+ * Props:
+ * - `transaction`: Transaction - The transaction data to render.
+ *
+ * Example:
+ * <TransactionItem transaction={transaction} />
  */
 
 import { View, Text } from "react-native";

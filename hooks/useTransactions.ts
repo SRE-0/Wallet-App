@@ -19,6 +19,19 @@ import {
   seedTransactions,
 } from "../services/transaction.service";
 
+/**
+ * useTransactions
+ *
+ * Custom React hook that subscribes to a card's transactions and exposes
+ * helpers for adding and seeding transactions.
+ *
+ * Usage:
+ * const { transactions, loading, addTransaction, seedTransactions } = useTransactions(userId, cardId)
+ *
+ * @param userId - Authenticated user ID
+ * @param cardId - Card ID to scope the transactions
+ * @returns Object containing `transactions`, `loading`, `addTransaction`, and `seedTransactions`
+ */
 export const useTransactions = (
   userId: string,
   cardId: string

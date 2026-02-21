@@ -1,18 +1,16 @@
 /**
  * TransactionsListWidget Component
  *
- * This widget encapsulates:
- * - Transactions fetching logic
- * - Loading state handling
- * - FlatList rendering
- * - Optional header and footer components
- * - Optional seed button
+ * This widget fetches and renders a list of transactions for a
+ * specific user's card. It handles loading state and provides
+ * optional header/footer and a development seed button.
  *
  * Props:
- * - userId: string -> ID used to fetch transactions
- * - showSeedButton?: boolean -> Enables the test data button
- * - HeaderComponent?: ReactNode -> Optional custom header
- * - FooterComponent?: ReactNode -> Optional custom footer
+ * - userId: string - Authenticated user id used to fetch documents
+ * - cardId: string - Card id to scope transactions
+ * - showSeedButton?: boolean - When true shows a button to insert test data
+ * - HeaderComponent?: ReactNode - Optional React node to render above the list
+ * - FooterComponent?: ReactNode - Optional React node to render below the list
  */
 
 import React from 'react';
@@ -28,6 +26,7 @@ import {
 import { useThemeColors } from '../../hooks/use-theme-color';
 import { useTransactions } from '../../hooks/useTransactions';
 import { TransactionItem } from './TransactionItem';
+import { createListStyles } from './styles';
 
 interface TransactionsListWidgetProps {
   userId: string;
@@ -45,7 +44,7 @@ export function TransactionsListWidget({
   FooterComponent,
 }: TransactionsListWidgetProps) {
   const colors = useThemeColors();
-  const styles = createStyles(colors);
+  const styles = createListStyles(colors);
 
   /**
    * Fetch transactions using custom hook
@@ -94,33 +93,4 @@ export function TransactionsListWidget({
   );
 }
 
-/**
- * Creates themed styles for the widget.
- *
- * @param colors - Theme color palette
- */
-const createStyles = (colors: any) =>
-  StyleSheet.create({
-    contentContainer: {
-      paddingHorizontal: 24,
-    },
-
-    loadingContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-
-    button: {
-      backgroundColor: colors.primary,
-      padding: 12,
-      borderRadius: 12,
-      marginVertical: 16,
-      alignItems: 'center',
-    },
-
-    buttonText: {
-      color: colors.onPrimary,
-      fontWeight: '600',
-    },
-  });
+// Styles moved to components/transaction/styles.ts as `createListStyles`

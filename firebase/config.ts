@@ -1,3 +1,16 @@
+/**
+ * Firebase configuration and initialization
+ *
+ * This file initializes Firebase and exports the Firestore `db` instance
+ * used across the application.
+ *
+ * NOTE: These client-side keys are often safe for frontend use but for
+ * production deployments consider moving sensitive values to environment
+ * variables or a secure secrets manager.
+ *
+ * Exports:
+ * - db: Firestore instance
+ */
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
@@ -20,6 +33,12 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-// Initialize Firestore correctly
+// Analytics is optional and may fail in non-browser runtimes
+try {
+  getAnalytics(app);
+} catch (err) {
+  // analytics not available in some environments
+}
+
+// Initialize Firestore
 export const db = getFirestore(app);

@@ -9,8 +9,11 @@ i18n.locale = Localization.locale;
 i18n.fallbacks = true;
 
 /**
- * Translation helper.
- * @param key Translation key
+ * Helper `t` wraps `i18n.t` to provide a typed entry point
+ * for translator keys used across the app.
+ *
+ * @param key - Translation key (dot-separated)
+ * @returns Translated string or the key when missing
  */
 export function t(key: string) {
   return i18n.t(key);
