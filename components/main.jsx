@@ -27,7 +27,7 @@ export function Main() {
   const styles = createMainStyles(colors);
 
   const userId = "demoUser";
-  const cardId = "demoCard_sexo1"; // Example card ID for fetching transactions
+  const cardId = "demoCard5"; // Example card ID for fetching transactions
 
   return (
     <View style={styles.container}>
