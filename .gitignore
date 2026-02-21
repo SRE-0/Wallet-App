@@ -1,10 +1,6 @@
 node_modules/
 .expo/
 .expo-shared/
-android/
-ios/
-web-build/
-build/
 dist/
 .vscode/
 npm-debug.log
@@ -54,9 +50,8 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-# generated native folders
-/ios
-/android
+.shh
+/.ssh
 
 # Firebase config
 .firebase/
