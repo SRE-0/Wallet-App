@@ -1,19 +1,4 @@
 
-
-
-Datos: 
-    -Transaction
-        - Amount
-        - Date
-        - Name
-        - Category
-        - Tax
-
-    - Usuario
-        - balance
-        - Total expend
-        - Total incomed
-
     Data user:
     - User name
     - Cards
@@ -27,3 +12,10 @@ Datos:
         - Total expend
         - Total incomed
 
+para usar una compilacion web de github, debes usar "/Wallet-App/index.js"
+
+despues de ejecutar 
+    npm run build  
+
+luego ejecuta 
+    npm run deploy  

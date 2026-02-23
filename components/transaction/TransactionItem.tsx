@@ -16,7 +16,7 @@ import { View, Text } from "react-native";
 
 import { FontAwesome6 } from "@expo/vector-icons";
 
-import { Transaction } from "../../models/transaction.model";
+import { Transaction } from "../../features/wallet/models/transaction.model";
 import { createStyles } from './styles';
 import { useThemeColors } from '../../hooks/use-theme-color';
 import { formatTransactionDate } from '../../utils/date';

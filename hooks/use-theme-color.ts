@@ -15,5 +15,5 @@ import { Colors } from '../constants/theme';
 export function useThemeColors() {
   const scheme = useColorScheme();
   // If the system is in dark mode, return the dark palette; otherwise return light.
-  return scheme === 'dark' ? Colors.dark : Colors.light;
+  return scheme === 'dark' ? Colors.light : Colors.dark;
 }

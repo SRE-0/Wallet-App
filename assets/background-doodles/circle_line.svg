@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  - This file is part of Doodle Android.
+  -
+  - Doodle Android is free software: you can redistribute it and/or modify
+  - it under the terms of the GNU General Public License as published by
+  - the Free Software Foundation, either version 3 of the License, or
+  - (at your option) any later version.
+  -
+  - Doodle Android is distributed in the hope that it will be useful,
+  - but WITHOUT ANY WARRANTY; without even the implied warranty of
+  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  - GNU General Public License for more details.
+  -
+  - You should have received a copy of the GNU General Public License
+  - along with Doodle Android. If not, see <http://www.gnu.org/licenses/>.
+  -
+  - Copyright (c) 2019-2022 by Patrick Zedler
+  -->
+
+<svg
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 821713.75 1452384.1"
+   width="821713.75"
+   height="1452384.1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <rect
+     id="bg"
+     width="1080"
+     height="1920"
+     x="-299250.88"
+     y="-257721.23"
+     fill="#000000"
+     fill-opacity="1" />
+  <path
+     id="circle"
+     fill="none"
+     stroke="#804c43"
+     stroke-opacity="1"
+     stroke-width="5"
+     d="m -298592.67,-257584.5 c -43.85,-0.1 -40.87,31.26 -83.47,41.66 -42.59,10.4 -54.39,-18.78 -93.27,1.52 -38.86,20.3 -21.67,46.67 -54.54,75.68 -32.88,29 -56.89,8.66 -81.89,44.69 -24.98,36.03 2.5,51.4 -13.12,92.36 -15.63,40.96 -46.36,34.1 -51.74,77.62 -5.37,43.51 26.11,44.34 31.3,87.88 5.2,43.53 -25.19,51.75 -9.73,92.77 15.47,41.03 43.72,27.14 68.55,63.27 24.83,36.13 1.74,57.53 34.5,86.67 32.75,29.14 51.32,3.7 90.11,24.16 38.77,20.46 28.26,50.14 70.81,60.72 42.56,10.58 47.18,-20.57 91,-20.48 43.86,0.1 48.34,31.25 90.94,20.85 42.59,-10.41 32.2,-40.13 71.06,-60.43 38.88,-20.3 57.32,5.21 90.2,-23.8 32.88,-29 9.87,-50.5 34.86,-86.53 24.97,-36.03 53.16,-22.02 68.8,-62.99 15.63,-40.96 -14.73,-49.3 -9.36,-92.81 5.38,-43.51 36.86,-44.21 31.65,-87.75 -5.2,-43.53 -35.96,-36.8 -51.41,-77.83 -15.47,-41.03 12.08,-56.28 -12.75,-92.41 -24.84,-36.13 -48.94,-15.88 -81.71,-45.02 -32.76,-29.14 -15.46,-55.45 -54.23,-75.9 -38.79,-20.46 -50.72,8.68 -93.27,-1.9 -42.54,-10.58 -39.45,-41.91 -83.29,-42 z"
+     opacity="1" />
+  <path
+     id="oval"
+     fill="none"
+     stroke="#4a4a4a"
+     stroke-opacity="1"
+     stroke-width="5"
+     d="m -298926.2,-256731.42 a 716.05,467.77 31.44 0 0 -351.46,172.8 716.05,467.77 31.44 0 0 366.89,772.6 716.05,467.77 31.44 0 0 854.93,-25.57 716.05,467.77 31.44 0 0 -366.92,-772.6 716.05,467.77 31.44 0 0 -503.44,-147.24 z"
+     opacity="1" />
+</svg>

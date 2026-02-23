@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  - This file is part of Doodle Android.
+  -
+  - Doodle Android is free software: you can redistribute it and/or modify
+  - it under the terms of the GNU General Public License as published by
+  - the Free Software Foundation, either version 3 of the License, or
+  - (at your option) any later version.
+  -
+  - Doodle Android is distributed in the hope that it will be useful,
+  - but WITHOUT ANY WARRANTY; without even the implied warranty of
+  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  - GNU General Public License for more details.
+  -
+  - You should have received a copy of the GNU General Public License
+  - along with Doodle Android. If not, see <http://www.gnu.org/licenses/>.
+  -
+  - Copyright (c) 2019-2022 by Patrick Zedler
+  -->
+
+<svg
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 949373.88 1748950.2"
+   width="949373.88"
+   height="1748950.2"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <path
+     id="pill"
+     fill="#342f2f"
+     d="m -373894.17,-2229554.2 c -85.13,-1.9 -171.48,24.7 -243.93,81.7 -165.6,130.3 -194,368.6 -63.7,534.2 l 117.65,149.5 c 130.3,165.6 368.53,194 534.12,63.6 165.6,-130.3 194,-368.5 63.7,-534.1 l -117.65,-149.5 c -73.3,-93.1 -180.74,-142.9 -290.2,-145.4 z" />
+</svg>

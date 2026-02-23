@@ -13,22 +13,26 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro",
-      "baseUrl": "/Wallet-app"
+      "baseUrl": "/Wallet-App"
     },
     "plugins": [
-      "expo-localization"
+      "expo-localization",
+      "@react-native-google-signin/google-signin",
+      "expo-web-browser"
     ]
   }
 }

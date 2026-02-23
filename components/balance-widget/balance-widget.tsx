@@ -1,17 +1,14 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, ActivityIndicator } from 'react-native';
 import { FontAwesome6 } from '@expo/vector-icons';
 
 import { useThemeColors } from '../../hooks/use-theme-color';
 import { createStyles } from './styles';
-import { useCard } from "../../hooks/useCard";
-import { useLastTransaction } from "../../hooks/useLastTransaction";
-import { formatTransactionDateSlim } from '../../utils/date';
 import { ActionButton } from './ActionButton';
+import { formatTransactionDateSlim } from '../../utils/date';
+
+// Hooks provided by the wallet feature
+import { useCard } from '../../features/wallet/hooks/useCard';
+import { useLastTransaction } from '../../features/wallet/hooks/useLastTransaction';
 
 interface BalanceWidgetProps {
   userId: string;
@@ -21,26 +18,29 @@ interface BalanceWidgetProps {
 /**
  * BalanceWidget
  *
- * Main widget that displays the user's current balance,
- * last transaction information, and quick action buttons.
+ * Renders the user's current card balance, the last transaction
+ * date and quick action buttons.
  *
- * This component is purely presentational and relies on
- * theme-based styles generated at runtime.
+ * Props:
+ * - `userId` (string): Firebase user id used to fetch card data.
+ * - `cardId` (string): The id of the card to show the balance for.
+ *
+ * This component does not return values; it renders UI only.
  */
 export function BalanceWidget({ userId, cardId }: BalanceWidgetProps) {
   const colors = useThemeColors();
   const styles = createStyles(colors);
   
-  const { card, loading: cardLoading } =
-    useCard(userId, cardId);
+  const { card, loading: cardLoading, error: cardError } = useCard(userId, cardId);
+  const { lastTransaction, loading: txLoading } = useLastTransaction(userId, cardId);
 
-  const {
-    lastTransaction,
-    loading: transactionLoading,
-  } = useLastTransaction(userId, cardId);
-
-  if (cardLoading || transactionLoading) {
+  // Loading / error states
+  if (cardLoading || txLoading) {
     return <ActivityIndicator size="large" />;
+  }
+
+  if (cardError) {
+    return <Text style={{ color: 'red' }}>{cardError}</Text>;
   }
 
   if (!card) {
@@ -49,71 +49,45 @@ export function BalanceWidget({ userId, cardId }: BalanceWidgetProps) {
 
   return (
     <View style={styles.containerCard}>
-      
-      {/* Widget title */}
       <Text style={styles.headerTitle}>My Balance</Text>
 
-      {/* Balance section wrapper */}
       <View style={styles.balanceSectionWrapper}>
-
-        {/* Header row for secondary cards */}
         <View style={styles.otherCardsRow}>
-          <FontAwesome6
-            style={styles.otherCardsIcon}
-            name="money-bills"
-            size={18}
-          />
+          <FontAwesome6 style={styles.otherCardsIcon} name="money-bills" size={18} />
           <Text style={styles.otherCardsText}>Other Cards</Text>
         </View>
 
-        {/* Main balance card */}
         <View style={styles.balanceCard}>
-          {/* Balance label */}
           <Text style={styles.metaLabel}>Balance</Text>
 
-          {/* Balance value and last transaction */}
           <View style={styles.balanceRow}>
-            {/* Main balance amount */}
-            <Text
-              style={styles.balanceAmount}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              ${card.balance.toFixed(2)}
+            <Text style={styles.balanceAmount} numberOfLines={1} ellipsizeMode="tail">
+              {card.currency} {card.balance.toFixed(2)}
             </Text>
 
-            {/* Last transaction info */}
             <View>
               <Text style={styles.metaLabel}>Last Trx.</Text>
               <Text style={styles.metaValue}>
                 {lastTransaction?.date
                   ? formatTransactionDateSlim(lastTransaction.date)
-                  : 'No data'
-                }
+                  : 'No transactions'}
               </Text>
             </View>
           </View>
 
-          {/* Wallet name */}
           <View style={styles.balanceRow_}>
             <View>
               <Text style={styles.metaLabel}>Name</Text>
-              <Text style={styles.metaValue}>American 1</Text>
+              <Text style={styles.metaValue}>{card.name}</Text>
             </View>
-
             <ActionButton variant="row" name="circle-plus" label="Add Card" />
-          </View>    
-          
+          </View>
         </View>
       </View>
 
-
-      {/* Action buttons */}
       <View style={styles.actionsRow}>
         <ActionButton name="money-bills" label="Add Transaction" />
-
         <ActionButton name="wallet" label="Wallet" />
-
         <ActionButton name="money-bill-transfer" label="Exchange" />
       </View>
     </View>
