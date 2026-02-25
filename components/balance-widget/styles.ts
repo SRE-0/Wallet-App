@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native';
 import { spacing } from '../../constants/spacing';
 import { radius } from '../../constants/radius';
 import { typography } from '../../constants/typography';
+import { width } from '@/constants/width';
 
 /**
  * createStyles
@@ -22,7 +23,7 @@ export const createStyles = (colors) =>
       borderRadius: radius.lg,
       padding: spacing.md,
       marginVertical: spacing.md,
-      maxWidth: 600,
+      maxWidth: width.md,
     },
 
     /**

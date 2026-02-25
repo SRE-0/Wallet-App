@@ -9,11 +9,12 @@
  *
  * @returns Color palette object (light or dark)
  */
-import { useColorScheme } from 'react-native';
+//import { useColorScheme } from 'react-native';
+import { useColorScheme } from './use-color-scheme';
 import { Colors } from '../constants/theme';
 
 export function useThemeColors() {
   const scheme = useColorScheme();
   // If the system is in dark mode, return the dark palette; otherwise return light.
-  return scheme === 'dark' ? Colors.light : Colors.dark;
+  return scheme === 'dark' ? Colors.dark : Colors.light;
 }

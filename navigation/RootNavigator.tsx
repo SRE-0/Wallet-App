@@ -41,8 +41,8 @@ export function RootNavigator() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {user ? (
-          // Authenticated: show main app routes
-          <Stack.Screen name="Main" component={AddWalletScreen} />
+          // Authenticated: show main app routes  
+          <Stack.Screen name="Main" component={Main} /> // Change to Main or AddWalletScreen as needed
         ) : (
           // Not authenticated: show login flow
           <Stack.Screen name="Login" component={LoginScreen} />

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, ViewStyle, StyleProp } from "react-native";
-import BackgroundSvg from "./svg";
+import BackgroundSvg from "./background-widget-svg";
 import { useThemeColors } from "../../hooks/use-theme-color";
 
 interface BackgroundWidgetProps {

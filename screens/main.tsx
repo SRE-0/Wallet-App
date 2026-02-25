@@ -15,7 +15,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { View, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
+//
 import { useThemeColors } from '../hooks/use-theme-color';
 import { createMainStyles } from './main.styles';
 import { BalanceWidget } from '../components/balance-widget/balance-widget';
