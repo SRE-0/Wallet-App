@@ -1,7 +1,7 @@
 node_modules/
 .expo/
 .expo-shared/
-dist/
+#dist/
 .vscode/
 npm-debug.log
 yarn-error.log
@@ -19,7 +19,7 @@ node_modules/
 
 # Expo
 .expo/
-dist/
+#dist/
 web-build/
 expo-env.d.ts
 
