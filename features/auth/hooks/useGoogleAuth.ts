@@ -1,43 +1,54 @@
-// hooks/useGoogleAuth.ts
-import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google";
-import { Platform } from "react-native";
-import { EXPO_CLIENT_ID, validateSecrets } from "../firebase/secrets";
+// hooks/useGoogleAuth.ts — versión con logs de diagnóstico
 
-// Ensure the browser auth session is completed on Android
-WebBrowser.maybeCompleteAuthSession();
+import { useState } from "react";
+import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin";
+import { EXPO_WEB_CLIENT_ID } from "../firebase/secrets";
 
-/**
- * useGoogleAuth
- *
- * Encapsulates the Expo Google Sign-In flow. Returns:
- * - `promptAsync`: function to open the Google auth UI
- * - `idToken`: the resulting Google ID token after a successful login
- * - `request`: internal request object from Expo's auth session
- *
- * Example:
- * const { promptAsync, idToken } = useGoogleAuth();
- * await promptAsync(); // opens Google sign-in UI
- * // idToken will be populated after successful authentication
- */
+GoogleSignin.configure({
+  webClientId: EXPO_WEB_CLIENT_ID,
+  offlineAccess: false,
+});
+
 export const useGoogleAuth = () => {
-  // Validate required secrets in development
-  validateSecrets();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    clientId: EXPO_CLIENT_ID,
+  const signIn = async (): Promise<string | null> => {
+    setError(null);
+    setLoading(true);
 
-    redirectUri: Platform.select({
-      web: "https://sre-0.github.io/Wallet-App/", // adjust as needed for web
-      default: "https://sre-0.github.io/Wallet-App/", // Expo generates a native redirect automatically
-    }),
-  });
+    try {
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 
-  // Extract the idToken when the response is successful
-  const idToken =
-    response?.type === "success"
-      ? response.params.id_token
-      : null;
+      const userInfo = await GoogleSignin.signIn();
 
-  return { promptAsync, idToken, request };
+      // ─── DIAGNOSTIC LOGS — remove after fixing ───
+      console.log("userInfo completo:", JSON.stringify(userInfo, null, 2));
+      console.log("idToken:", userInfo.data?.idToken);
+      // ─────────────────────────────────────────────
+
+      return userInfo.data?.idToken ?? null;
+
+    } catch (err: any) {
+      // ─── DIAGNOSTIC LOGS — remove after fixing ───
+      console.log("Google Sign-In error completo:", JSON.stringify(err, null, 2));
+      console.log("error.code:", err.code);
+      console.log("error.message:", err.message);
+      // ─────────────────────────────────────────────
+
+      if (err.code === statusCodes.SIGN_IN_CANCELLED) return null;
+      if (err.code === statusCodes.IN_PROGRESS) return null;
+      if (err.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        setError("Google Play Services is not available on this device");
+      } else {
+        setError(err.message ?? "Unexpected error during Google Sign-In");
+      }
+
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { signIn, loading, error };
 };

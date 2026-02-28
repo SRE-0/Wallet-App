@@ -20,17 +20,22 @@ import { auth, db } from "../firebase/config";
  * ensureUserDocument
  *
  * Creates the Firestore user document if it does not exist yet.
- * This runs after any successful login method to ensure user data
- * is available in the database.
+ * This runs after any successful login method to guarantee user data
+ * is available in the database regardless of which auth method was used.
+ *
+ * This also acts as a safety net for users whose document may have
+ * failed to create during a previous registration attempt.
+ *
+ * @param user - Authenticated Firebase User object
  */
-const ensureUserDocument = async (user: User) => {
+const ensureUserDocument = async (user: User): Promise<void> => {
   const ref = doc(db, "users", user.uid);
   const snap = await getDoc(ref);
 
-  // Solo crea el doc si es la primera vez que inicia sesión
+  // Only creates the document on first login — never overwrites existing data
   if (!snap.exists()) {
     await setDoc(ref, {
-      displayName: user.displayName ?? "Usuario",
+      displayName: user.displayName ?? "User",
       email: user.email,
       photoURL: user.photoURL ?? null,
       createdAt: serverTimestamp(),
@@ -49,22 +54,22 @@ const ensureUserDocument = async (user: User) => {
  * Firebase Auth profile with `displayName`, and creates the
  * related Firestore user document.
  *
- * Parameters:
- * - `email`: user email
- * - `password`: user password
- * - `displayName`: name to set on the user profile
+ * @param email - User email address
+ * @param password - User password (minimum 6 characters)
+ * @param displayName - Name to set on the Firebase Auth profile
+ * @returns The authenticated Firebase User object
  */
 export const registerWithEmail = async (
   email: string,
   password: string,
   displayName: string
-) => {
+): Promise<User> => {
   const credential = await createUserWithEmailAndPassword(auth, email, password);
 
-  // Actualiza el perfil en Firebase Auth con el nombre
+  // Update Firebase Auth profile with the provided display name
   await updateProfile(credential.user, { displayName });
 
-  // Crea el documento en Firestore
+  // Create the Firestore user document after profile is updated
   await ensureUserDocument(credential.user);
 
   return credential.user;
@@ -73,12 +78,29 @@ export const registerWithEmail = async (
 /**
  * loginWithEmail
  *
- * Signs in a user using email and password.
+ * Signs in an existing user using email and password.
+ * Also ensures the Firestore user document exists as a safety net —
+ * this handles users created via other auth methods or cases where
+ * the document creation failed during a previous registration.
  *
- * Returns the authenticated `User`.
+ * Not calling ensureUserDocument here was the root cause of the
+ * "unknown error" that appeared after login: the app was trying
+ * to read a Firestore document that did not exist.
+ *
+ * @param email - User email address
+ * @param password - User password
+ * @returns The authenticated Firebase User object
  */
-export const loginWithEmail = async (email: string, password: string) => {
+export const loginWithEmail = async (
+  email: string,
+  password: string
+): Promise<User> => {
   const credential = await signInWithEmailAndPassword(auth, email, password);
+
+  // Ensure the Firestore document exists — this was missing before and
+  // caused downstream reads to fail silently after a successful login
+  await ensureUserDocument(credential.user);
+
   return credential.user;
 };
 
@@ -90,17 +112,17 @@ export const loginWithEmail = async (email: string, password: string) => {
  * loginWithGoogle
  *
  * Signs in a user with a Google `idToken` obtained via
- * `expo-auth-session`. The function exchanges the token for
- * Firebase credentials and ensures the Firestore user doc exists.
+ * `expo-auth-session`. Exchanges the token for Firebase credentials
+ * and ensures the Firestore user document exists.
  *
- * Parameters:
- * - `idToken`: Google ID token from the client auth flow
+ * @param idToken - Google ID token returned from the client auth flow
+ * @returns The authenticated Firebase User object
  */
-export const loginWithGoogle = async (idToken: string) => {
-  const credential = GoogleAuthProvider.credential(idToken);
-  const result = await signInWithCredential(auth, credential);
+export const loginWithGoogle = async (idToken: string): Promise<User> => {
+  const googleCredential = GoogleAuthProvider.credential(idToken);
+  const result = await signInWithCredential(auth, googleCredential);
 
-  // Crea el doc en Firestore si es la primera vez
+  // Create the Firestore doc if this is the user's first Google login
   await ensureUserDocument(result.user);
 
   return result.user;
@@ -110,7 +132,13 @@ export const loginWithGoogle = async (idToken: string) => {
 // Sign out
 // ─────────────────────────────────────────────
 
-export const logout = async () => {
+/**
+ * logout
+ *
+ * Signs out the currently authenticated user from Firebase Auth.
+ * Clears the local auth session.
+ */
+export const logout = async (): Promise<void> => {
   await signOut(auth);
 };
 
@@ -121,13 +149,18 @@ export const logout = async () => {
 /**
  * subscribeToAuthState
  *
- * Subscribes to Firebase authentication state changes. Returns the
- * unsubscribe function.
+ * Subscribes to Firebase authentication state changes.
+ * Returns the unsubscribe function to be called on cleanup.
+ *
+ * @param callback - Function called with the current User or null
+ * @returns Unsubscribe function
  *
  * Example:
  * const unsub = subscribeToAuthState((user) => setUser(user));
- * // In cleanup: unsub()
+ * // On cleanup: unsub()
  */
-export const subscribeToAuthState = (callback: (user: User | null) => void) => {
+export const subscribeToAuthState = (
+  callback: (user: User | null) => void
+): (() => void) => {
   return onAuthStateChanged(auth, callback);
 };

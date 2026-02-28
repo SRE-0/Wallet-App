@@ -19,7 +19,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useThemeColors } from '../hooks/use-theme-color';
 import { createMainStyles } from './main.styles';
 import { BalanceWidget } from '../components/balance-widget/balance-widget';
-import { TransactionsListWidget } from '../components/transaction/transaction-widget';
+import { TransactionsListWidget } from '../components/transaction-widget/transaction-widget';
 
 // The authenticated user is provided by the auth feature hook
 import { useAuth } from '../features/auth/hooks/useAuth';

@@ -1,21 +1,22 @@
+// features/auth/screens/LoginScreen.tsx
+
 /**
  * LoginScreen
  *
  * Authentication screen that allows users to:
  * - Login with email and password
  * - Register a new account
- * - Authenticate using Google Sign-In
+ * - Authenticate using the native Google Sign-In popup
+ *
+ * Navigation is handled automatically by RootNavigator, which listens
+ * to Firebase auth state via useAuth. When login succeeds Firebase updates
+ * the auth state and RootNavigator switches to the authenticated stack.
  *
  * This screen is theme-aware and adapts its colors dynamically
  * using the global application theme.
- *
- * Props:
- * - onLoginSuccess: () => void
- *   Callback executed after a successful authentication,
- *   usually used to navigate to the main app.
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -29,17 +30,11 @@ import {
 
 import { loginWithEmail, registerWithEmail, loginWithGoogle } from "../services/auth.service";
 import { useGoogleAuth } from "../hooks/useGoogleAuth";
-import { useThemeColors } from "../../../hooks/use-theme-color";
+import { useThemeColors } from "@/hooks/use-theme-color";
 import { createStyles } from "./login.styles";
+import { BackgroundWidget } from "@/components/background-widget/background-widget";
 
-import { BackgroundWidget } from "@/components/background/background-widget";
-
-
-interface Props {
-  onLoginSuccess: () => void;
-}
-
-export const LoginScreen = ({ onLoginSuccess }: Props) => {
+export const LoginScreen = () => {
   const colors = useThemeColors();
   const styles = createStyles(colors);
 
@@ -49,37 +44,40 @@ export const LoginScreen = ({ onLoginSuccess }: Props) => {
   const [isRegistering, setIsRegistering] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { promptAsync, idToken } = useGoogleAuth();
+  // useGoogleAuth now uses the native SDK — no idToken effect needed,
+  // signIn() returns the token directly as a resolved promise value
+  const { signIn: googleSignIn, loading: googleLoading } = useGoogleAuth();
 
   /**
-   * Effect triggered when Google authentication
-   * returns a valid ID token.
+   * handleGoogleAuth
    *
-   * Automatically performs login using Firebase.
+   * Triggers the native Google account picker popup and exchanges
+   * the resulting ID token for a Firebase session.
+   * Returns early and shows no error if the user cancelled the picker.
    */
-  useEffect(() => {
+  const handleGoogleAuth = async () => {
+    const idToken = await googleSignIn();
+
+    // null means the user cancelled — no error needed
     if (!idToken) return;
 
-    const handleGoogleLogin = async () => {
-      setLoading(true);
-      try {
-        await loginWithGoogle(idToken);
-        onLoginSuccess();
-      } catch (error: any) {
-        Alert.alert("Google login error", error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    handleGoogleLogin();
-  }, [idToken]);
+    setLoading(true);
+    try {
+      await loginWithGoogle(idToken);
+      // Navigation is handled automatically by RootNavigator
+    } catch (error: any) {
+      Alert.alert("Google login error", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   /**
-   * Handles authentication using email and password.
+   * handleEmailAuth
    *
-   * Depending on the `isRegistering` flag, this function
-   * either logs in the user or creates a new account.
+   * Handles authentication using email and password.
+   * Depending on the isRegistering flag, either logs in or creates
+   * a new account. Navigation is handled by RootNavigator automatically.
    */
   const handleEmailAuth = async () => {
     if (!email || !password) {
@@ -100,14 +98,15 @@ export const LoginScreen = ({ onLoginSuccess }: Props) => {
       } else {
         await loginWithEmail(email, password);
       }
-
-      onLoginSuccess();
     } catch (error: any) {
       Alert.alert("Authentication error", getFriendlyError(error.code));
     } finally {
       setLoading(false);
     }
   };
+
+  // True when either email auth or Google auth is in progress
+  const isLoading = loading || googleLoading;
 
   return (
     <BackgroundWidget>
@@ -160,7 +159,7 @@ export const LoginScreen = ({ onLoginSuccess }: Props) => {
           <TouchableOpacity
             style={styles.primaryButton}
             onPress={handleEmailAuth}
-            disabled={loading}
+            disabled={isLoading}
           >
             {loading ? (
               <ActivityIndicator color={colors.background} />
@@ -173,12 +172,16 @@ export const LoginScreen = ({ onLoginSuccess }: Props) => {
 
           <TouchableOpacity
             style={styles.googleButton}
-            onPress={() => promptAsync()}
-            disabled={loading}
+            onPress={handleGoogleAuth}
+            disabled={isLoading}
           >
-            <Text style={styles.googleButtonText}>
-              Continue with Google
-            </Text>
+            {googleLoading ? (
+              <ActivityIndicator color={colors.background} />
+            ) : (
+              <Text style={styles.googleButtonText}>
+                Continue with Google
+              </Text>
+            )}
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -198,8 +201,12 @@ export const LoginScreen = ({ onLoginSuccess }: Props) => {
 };
 
 /**
- * Maps Firebase authentication error codes
- * to user-friendly messages.
+ * getFriendlyError
+ *
+ * Maps Firebase authentication error codes to user-friendly messages.
+ *
+ * @param code - Firebase error code (e.g. "auth/wrong-password")
+ * @returns Human-readable error string
  */
 const getFriendlyError = (code: string): string => {
   const errors: Record<string, string> = {
@@ -208,6 +215,9 @@ const getFriendlyError = (code: string): string => {
     "auth/wrong-password": "Incorrect password",
     "auth/email-already-in-use": "Email already in use",
     "auth/weak-password": "Password must be at least 6 characters",
+    "auth/invalid-credential": "Incorrect email or password",
+    "auth/too-many-requests": "Too many attempts, please try again later",
+    "auth/network-request-failed": "Network error, check your connection",
   };
 
   return errors[code] ?? "Unexpected error occurred";

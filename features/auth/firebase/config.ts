@@ -1,8 +1,6 @@
 // firebase/config.ts
-
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
 import { Platform } from "react-native";
 import {
   FIREBASE_API_KEY,
@@ -12,11 +10,7 @@ import {
   FIREBASE_MESSAGING_SENDER_ID,
   FIREBASE_APP_ID,
   FIREBASE_MEASUREMENT_ID,
-  validateSecrets,
 } from "./secrets";
-
-// Validación en desarrollo para recordar configurar variables de entorno
-validateSecrets();
 
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
@@ -30,16 +24,39 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-/*
- * Note on persistence:
- * Calling `getAuth()` without additional persistence configuration
- * works for both web and native environments:
- * - Web: uses localStorage automatically
- * - Native: uses in-memory persistence (session lasts while app is open)
+/**
+ * initializeAuthWithPersistence
  *
- * If you require persistence across native app restarts, install
- * `@react-native-async-storage/async-storage` and configure Firebase
- * persistence accordingly when supported by your Firebase SDK.
+ * Initializes Firebase Auth with the correct persistence strategy
+ * depending on the current platform:
+ *
+ * - Native (iOS / Android): uses AsyncStorage so the session survives
+ *   app restarts. Requires @react-native-async-storage/async-storage.
+ *
+ * - Web: uses Firebase's default browserLocalPersistence (localStorage),
+ *   which is applied automatically when no persistence is specified.
+ *   getReactNativePersistence does not exist in the web build of Firebase,
+ *   so calling it on web throws "is not a function".
+ *
+ * @returns Configured FirebaseAuth instance
  */
-export const auth = getAuth(app);
+const initializeAuthWithPersistence = () => {
+  if (Platform.OS === "web") {
+    // On web, Firebase Auth defaults to browserLocalPersistence automatically.
+    // No extra configuration needed — importing getAuth is sufficient.
+    const { getAuth } = require("firebase/auth");
+    return getAuth(app);
+  }
+
+  // On native, explicitly configure AsyncStorage persistence so the
+  // authenticated session survives when the user closes and reopens the app.
+  const { initializeAuth, getReactNativePersistence } = require("firebase/auth");
+  const ReactNativeAsyncStorage = require("@react-native-async-storage/async-storage").default;
+
+  return initializeAuth(app, {
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+  });
+};
+
+export const auth = initializeAuthWithPersistence();
 export const db = getFirestore(app);

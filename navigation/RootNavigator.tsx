@@ -17,6 +17,7 @@ import { useAuth } from '../features/auth/hooks/useAuth';
 import { LoginScreen } from '../features/auth/screens/LoginScreen';
 import { Main } from '../../Wallet-app/screens/main';
 import { AddWalletScreen } from '@/features/wallet/screens/AddWalletScreen';
+import { AddTransactionScreen } from '@/features/transaction/screens/AddTransactionScreen';
 
 // Define route types for improved TypeScript autocomplete
 export type RootStackParamList = {

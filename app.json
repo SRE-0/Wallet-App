@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme": "https://sre-0.github.io/Wallet-App/",
     "name": "Wallet-app",
     "slug": "Wallet-app",
     "version": "1.0.0",
@@ -13,10 +14,12 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "bundleIdentifier": "com.sre404.walletapp",
       "supportsTablet": true,
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
+      "package": "com.sre404.walletapp",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

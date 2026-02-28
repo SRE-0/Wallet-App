@@ -8,7 +8,7 @@
 import { radius } from "@/constants/radius";
 import { spacing } from "@/constants/spacing";
 import { StyleSheet } from "react-native";
-import { typography } from '../../../constants/typography';
+import { typography } from '@/constants/typography';
 
 export const createStyles = (colors: any) =>
   StyleSheet.create({

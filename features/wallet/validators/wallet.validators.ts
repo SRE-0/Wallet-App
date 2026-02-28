@@ -8,10 +8,10 @@ import { CreateTransactionPayload } from "../models/transaction.model";
 const LIMITS = {
   MAX_TRANSACTION_AMOUNT: 1_000_000,
   MIN_TRANSACTION_AMOUNT: -1_000_000,
-  MAX_NAME_LENGTH: 100,
+  MAX_NAME_LENGTH: 50,
   MAX_CATEGORY_LENGTH: 50,
   MAX_CARD_NAME_LENGTH: 60,
-  MAX_TAX: 100,    // porcentaje máximo
+  MAX_TAX: 100, //max percentage
   MIN_TAX: 0,
 } as const;
 
