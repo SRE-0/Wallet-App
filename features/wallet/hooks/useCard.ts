@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "../models/card.model";
-import { getOrCreateCard, subscribeToCard } from "../services/card.service";
+import { subscribeToCard } from "../repositories/card.repository";
 
 interface UseCardResult {
   card: Card | null;
@@ -13,17 +13,17 @@ interface UseCardResult {
 /**
  * useCard
  *
- * Ensures a card exists for the given `userId` / `cardId` and
- * subscribes to its real-time updates.
+ * Subscribes to real-time updates for a specific card document.
+ * Unlike the previous version this hook no longer calls getOrCreateCard —
+ * card creation is now an explicit user action handled by useAddCard.
  *
- * Parameters:
- * - `userId` (string): Firebase user id
- * - `cardId` (string): Card id to observe
+ * @param userId - Authenticated Firebase user id
+ * @param cardId - Target card id to observe
  *
  * Returns:
- * - `card`: `Card | null` — current card data or null
- * - `loading`: boolean — true while initializing or subscribing
- * - `error`: string | null — error message when initialization fails
+ * - card:    Card | null — current card data, null if not found
+ * - loading: boolean — true while the subscription is initializing
+ * - error:   string | null — error message on failure
  */
 export const useCard = (userId: string, cardId: string): UseCardResult => {
   const [card, setCard] = useState<Card | null>(null);
@@ -33,28 +33,20 @@ export const useCard = (userId: string, cardId: string): UseCardResult => {
   useEffect(() => {
     if (!userId || !cardId) return;
 
-    let unsubscribe: (() => void) | undefined;
+    setLoading(true);
+    setError(null);
 
-    const init = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        // Garantiza que el doc exista antes de suscribirse
-        await getOrCreateCard(userId, cardId);
-
-        unsubscribe = subscribeToCard(userId, cardId, (updatedCard) => {
-          setCard(updatedCard);
-          setLoading(false);
-        });
-      } catch (err: any) {
-        setError(err.message ?? "Failed to load card");
+    try {
+      const unsubscribe = subscribeToCard(userId, cardId, (updatedCard) => {
+        setCard(updatedCard);
         setLoading(false);
-      }
-    };
+      });
 
-    init();
-    return () => unsubscribe?.();
+      return unsubscribe;
+    } catch (err: any) {
+      setError(err.message ?? "Failed to subscribe to card");
+      setLoading(false);
+    }
   }, [userId, cardId]);
 
   return { card, loading, error };

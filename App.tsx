@@ -11,12 +11,15 @@
  * Usage: The default export `App` is used by the native runtime
  * to bootstrap the React tree.
  */
-import { ActivityIndicator, View } from 'react-native';
-import { useAuth } from './features/auth/hooks/useAuth';
-import { LoginScreen } from './features/auth/screens/LoginScreen';
-import { Main } from '../Wallet-app/screens/main';
-import { RootNavigator } from './navigation/RootNavigator';
+// Entrypoint shim after migrating to expo-router. The real application root now lives in `app/index.tsx`;
+// exporting it here keeps legacy references working.
 
-export default function App() {
-  return <RootNavigator />;
-}
+// re-export the new router entry. the plain import without an extension
+// should resolve correctly now that the `app` directory is included in the
+// TypeScript project.
+export { default } from './app/index';
+
+// NOTE: the old App implementation was removed during the migration. The
+// router-controlled entry inside `app/` now takes over responsibility for
+// rendering the navigation tree. The stub above ensures any legacy imports
+// of `App` still resolve correctly.

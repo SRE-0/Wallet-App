@@ -1,6 +1,10 @@
 /**
  * Typography presets to ensure consistent font sizes and weights.
  */
+// Use `as const` so that string literals (e.g. font weights) are kept as
+// literal types instead of widening to generic `string`. This prevents
+// the style spreading in components from generating incompatible types
+// when merged with React Native's `TextStyle` expectations.
 export const typography = {
   title: {
     fontSize: 18,
@@ -25,4 +29,4 @@ export const typography = {
     fontSize: 18,
     fontWeight: '700',
   },
-};
+} as const;

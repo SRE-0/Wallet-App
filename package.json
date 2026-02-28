@@ -2,7 +2,7 @@
   "name": "wallet-app",
   "version": "1.0.0",
   "homepage": "https://sre-0.github.io/Wallet-App",
-  "main": "index.js",
+  "main": "expo-router/entry",
   "scripts": {
     "build": "npx expo export -p web",
     "deploy": "gh-pages -d dist",

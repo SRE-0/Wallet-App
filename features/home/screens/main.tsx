@@ -16,13 +16,13 @@ import { StatusBar } from 'expo-status-bar';
 import { View, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 //
-import { useThemeColors } from '../hooks/use-theme-color';
+import { useThemeColors } from '../../../hooks/use-theme-color';
 import { createMainStyles } from './main.styles';
-import { BalanceWidget } from '../components/balance-widget/balance-widget';
-import { TransactionsListWidget } from '../components/transaction-widget/transaction-widget';
+import { BalanceWidget } from '../../../components/balance-widget/balance-widget';
+import { TransactionsListWidget } from '../../../components/transaction-widget/transaction-widget';
 
 // The authenticated user is provided by the auth feature hook
-import { useAuth } from '../features/auth/hooks/useAuth';
+import { useAuth } from '../../auth/hooks/useAuth';
 
 const CARD_ID = "main"; // Fixed id used for the main/default card view
 

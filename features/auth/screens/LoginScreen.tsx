@@ -1,5 +1,3 @@
-// features/auth/screens/LoginScreen.tsx
-
 /**
  * LoginScreen
  *
@@ -8,9 +6,9 @@
  * - Register a new account
  * - Authenticate using the native Google Sign-In popup
  *
- * Navigation is handled automatically by RootNavigator, which listens
+ * Navigation is handled automatically by Expo Router, which listens
  * to Firebase auth state via useAuth. When login succeeds Firebase updates
- * the auth state and RootNavigator switches to the authenticated stack.
+ * the auth state and app/index.tsx redirects to the authenticated stack.
  *
  * This screen is theme-aware and adapts its colors dynamically
  * using the global application theme.
@@ -44,8 +42,6 @@ export const LoginScreen = () => {
   const [isRegistering, setIsRegistering] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // useGoogleAuth now uses the native SDK — no idToken effect needed,
-  // signIn() returns the token directly as a resolved promise value
   const { signIn: googleSignIn, loading: googleLoading } = useGoogleAuth();
 
   /**
@@ -64,7 +60,7 @@ export const LoginScreen = () => {
     setLoading(true);
     try {
       await loginWithGoogle(idToken);
-      // Navigation is handled automatically by RootNavigator
+      // Navigation is handled automatically by app/index.tsx via useAuth
     } catch (error: any) {
       Alert.alert("Google login error", error.message);
     } finally {
@@ -77,7 +73,7 @@ export const LoginScreen = () => {
    *
    * Handles authentication using email and password.
    * Depending on the isRegistering flag, either logs in or creates
-   * a new account. Navigation is handled by RootNavigator automatically.
+   * a new account. Navigation is handled by app/index.tsx automatically.
    */
   const handleEmailAuth = async () => {
     if (!email || !password) {
