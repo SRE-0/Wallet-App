@@ -29,13 +29,15 @@
     },
     "web": {
       "favicon": "./assets/favicon.png",
-      "bundler": "metro",
-      "baseUrl": "/Wallet-App"
+      "bundler": "metro"
     },
     "plugins": [
       "expo-localization",
       "@react-native-google-signin/google-signin",
       "expo-web-browser"
-    ]
+    ],
+    "experiments": {
+      "baseUrl": "/Wallet-App"
+    }
   }
 }
