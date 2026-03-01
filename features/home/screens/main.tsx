@@ -37,9 +37,6 @@ export function Main() {
   // If there's no authenticated user, render nothing
   if (!user) return null;
 
-  console.log("Main - user uid:", user?.uid);
-  console.log("Main - cardId:", CARD_ID);
-
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
