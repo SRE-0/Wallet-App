@@ -77,6 +77,8 @@ export const useGoogleAuth = () => {
     redirectUri: WEB_REDIRECT_URI,
   });
 
+  console.log("Google Auth - WEB_REDIRECT_URI:", WEB_REDIRECT_URI);
+
   // ─── Shared state ─────────────────────────────────────────────────────────
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
