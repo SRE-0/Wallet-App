@@ -1,11 +1,4 @@
 # deploy.yml
-#
-# Builds the Expo web export and deploys it to GitHub Pages.
-# Triggers on every push to the master branch.
-#
-# Required repository secret: none — uses the built-in GITHUB_TOKEN.
-# Required repository setting: Pages source must be set to "GitHub Actions".
-
 name: Deploy to GitHub Pages
 
 on:
@@ -38,6 +31,26 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      # Debug step: verifies that secrets are not empty before building.
+      # Shows only whether the value is present, never the actual value.
+      - name: Verify required secrets are present
+        run: |
+          if [ -z "$EXPO_PUBLIC_EXPO_WEB_CLIENT_ID" ]; then
+            echo "ERROR: EXPO_PUBLIC_EXPO_WEB_CLIENT_ID is empty. Check the secret name in GitHub Settings."
+            exit 1
+          else
+            echo "EXPO_PUBLIC_EXPO_WEB_CLIENT_ID is set (length: ${#EXPO_PUBLIC_EXPO_WEB_CLIENT_ID})"
+          fi
+          if [ -z "$EXPO_PUBLIC_FIREBASE_API_KEY" ]; then
+            echo "ERROR: EXPO_PUBLIC_FIREBASE_API_KEY is empty."
+            exit 1
+          else
+            echo "EXPO_PUBLIC_FIREBASE_API_KEY is set (length: ${#EXPO_PUBLIC_FIREBASE_API_KEY})"
+          fi
+        env:
+          EXPO_PUBLIC_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          EXPO_PUBLIC_EXPO_WEB_CLIENT_ID: ${{ secrets.EXPO_WEB_CLIENT_ID }}
 
       - name: Export Expo web build
         run: npx expo export --platform web

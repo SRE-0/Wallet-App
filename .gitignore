@@ -9,7 +9,7 @@ pnpm-lock.yaml
 package-lock.json
 .DS_Store
 .env
-.env.*
+.env.
 # Firebase local files
 firebase-debug.log
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
