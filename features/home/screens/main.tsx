@@ -24,7 +24,7 @@ import { TransactionsListWidget } from '../../../components/transaction-widget/t
 // The authenticated user is provided by the auth feature hook
 import { useAuth } from '../../auth/hooks/useAuth';
 
-const CARD_ID = "main"; // Fixed id used for the main/default card view
+const CARD_ID = "card_1772392317249"; // Fixed id used for the main/default card view
 
 export function Main() {
   const colors = useThemeColors();

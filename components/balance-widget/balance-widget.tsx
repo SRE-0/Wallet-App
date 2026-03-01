@@ -10,6 +10,10 @@ import { formatTransactionDateSlim } from '../../utils/date';
 import { useCard } from '../../features/wallet/hooks/useCard';
 import { useLastTransaction } from '../../features/wallet/hooks/useLastTransaction';
 
+import { Link } from 'expo-router';
+import { useRouter } from "expo-router";
+
+
 interface BalanceWidgetProps {
   userId: string;
   cardId: string;
@@ -34,6 +38,9 @@ export function BalanceWidget({ userId, cardId }: BalanceWidgetProps) {
   const { card, loading: cardLoading, error: cardError } = useCard(userId, cardId);
   const { lastTransaction, loading: txLoading } = useLastTransaction(userId, cardId);
 
+  // Inside your component:
+  const router = useRouter();
+
   // Loading / error states
   if (cardLoading || txLoading) {
     return <ActivityIndicator size="large" />;
@@ -46,6 +53,26 @@ export function BalanceWidget({ userId, cardId }: BalanceWidgetProps) {
   if (!card) {
     return <Text>No card data available</Text>;
   }
+
+  /**
+  * navigateToAddTransaction
+  * Pushes the add-transaction modal passing userId and cardId as
+  * search params so the screen knows which card to write to.
+  */
+  const navigateToAddTransaction = () => {
+    router.push({
+      pathname: "/(app)/add-transaction",
+      params: { userId, cardId },
+    });
+  };
+
+  /**
+   * navigateToAddWallet
+   * Pushes the add-wallet modal. No params needed.
+   */
+  const navigateToAddWallet = () => {
+    router.push("/(app)/add-wallet");
+  };
 
   return (
     <View style={styles.containerCard}>
@@ -80,14 +107,20 @@ export function BalanceWidget({ userId, cardId }: BalanceWidgetProps) {
               <Text style={styles.metaLabel}>Name</Text>
               <Text style={styles.metaValue}>{card.name}</Text>
             </View>
-            <ActionButton variant="row" name="circle-plus" label="Add Card" />
+            <ActionButton variant="row" name="circle-plus" label="Add Card" 
+              onPress={navigateToAddWallet}
+            />
           </View>
         </View>
       </View>
 
       <View style={styles.actionsRow}>
-        <ActionButton name="money-bills" label="Add Transaction" />
-        <ActionButton name="wallet" label="Wallet" />
+        <ActionButton name="money-bills" label="Add Transaction" 
+          onPress={navigateToAddTransaction} 
+        />
+        <ActionButton name="wallet" label="Wallet"
+          onPress={navigateToAddWallet}
+        />
         <ActionButton name="money-bill-transfer" label="Exchange" />
       </View>
     </View>

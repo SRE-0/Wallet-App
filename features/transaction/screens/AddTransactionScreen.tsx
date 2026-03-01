@@ -1,11 +1,13 @@
-// features/wallet/screens/AddTransactionScreen.tsx
-
 /**
  * AddTransactionScreen
  *
  * Screen that allows the user to add a new transaction to a specific card.
  * Uses useAddTransaction to handle the Firestore write and atomic card
  * balance update. Navigation is handled by the caller via onSuccess.
+ *
+ * Transaction type toggle:
+ * - "expense" → amount is stored as negative value
+ * - "income"  → amount is stored as positive value
  *
  * Props:
  * - userId:    Authenticated Firebase user id
@@ -22,6 +24,7 @@ import {
   KeyboardAvoidingView,
   Alert,
   Platform,
+  StyleSheet,
 } from "react-native";
 
 import { useThemeColors } from "@/hooks/use-theme-color";
@@ -42,6 +45,9 @@ const CATEGORY_OPTIONS = [
   "Income",
   "Other",
 ];
+
+// Transaction direction — determines the sign applied to the amount
+type TransactionType = "expense" | "income";
 
 interface AddTransactionScreenProps {
   userId: string;
@@ -64,17 +70,31 @@ export const AddTransactionScreen = ({
   const [taxText, setTaxText] = useState("0");
   const [category, setCategory] = useState(CATEGORY_OPTIONS[0]);
 
+  // Default to expense since it is the most common operation
+  const [transactionType, setTransactionType] =
+    useState<TransactionType>("expense");
+
   const { addTransaction, loading, error } = useAddTransaction(userId, cardId);
+
+  /**
+   * handleToggleType
+   * Switches between expense and income.
+   * The sign is not stored in the text field — it is applied at submit time.
+   */
+  const handleToggleType = () => {
+    setTransactionType((prev) => (prev === "expense" ? "income" : "expense"));
+  };
 
   /**
    * handleAddTransaction
    *
    * Parses and validates local form fields before calling addTransaction.
-   * Amount accepts both positive (income) and negative (expense) values.
+   * Applies a negative sign automatically when transactionType is "expense".
    * The validator in the repository will catch out-of-range values.
    */
   const handleAddTransaction = async () => {
-    const amount = parseFloat(amountText);
+    // Always parse the raw absolute value the user typed
+    const rawAmount = parseFloat(amountText);
     const tax = parseFloat(taxText);
 
     if (!name.trim()) {
@@ -82,8 +102,8 @@ export const AddTransactionScreen = ({
       return;
     }
 
-    if (isNaN(amount) || amount === 0) {
-      Alert.alert("Invalid amount", "Please enter a valid non-zero amount");
+    if (isNaN(rawAmount) || rawAmount <= 0) {
+      Alert.alert("Invalid amount", "Please enter a valid positive amount");
       return;
     }
 
@@ -92,9 +112,13 @@ export const AddTransactionScreen = ({
       return;
     }
 
+    // Apply the sign based on the selected transaction type
+    const signedAmount =
+      transactionType === "expense" ? -Math.abs(rawAmount) : Math.abs(rawAmount);
+
     const txId = await addTransaction({
       name,
-      amount,
+      amount: signedAmount,
       tax,
       category,
       date: new Date(),
@@ -106,6 +130,8 @@ export const AddTransactionScreen = ({
       Alert.alert("Error", error);
     }
   };
+
+  const isExpense = transactionType === "expense";
 
   return (
     <BackgroundWidget>
@@ -128,10 +154,33 @@ export const AddTransactionScreen = ({
             onChangeText={setName}
           />
 
-          {/* Positive amount = income, negative = expense */}
+          {/*
+           * Type toggle — switches between expense (negative) and income (positive).
+           * The user only types the absolute value; sign is applied on submit.
+           */}
+          <TouchableOpacity
+            style={styles.settingButton}
+            onPress={handleToggleType}
+          >
+            <View style={styles.contentIcon}>
+              <FontAwesome6
+                style={styles.otherCardsIcon}
+                name={isExpense ? "arrow-trend-down" : "arrow-trend-up"}
+                size={width.icon_md}
+              />
+            </View>
+            <View style={styles.settingContainer}>
+              <Text style={styles.settingTitle}>Type</Text>
+              <Text style={styles.settingSubTitle}>
+                {isExpense ? "Expense (−)" : "Income (+)"}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* User types only the absolute value — sign is auto-applied */}
           <CustomInput
             iconName="money-bills"
-            placeholder="Amount (use - for expenses)"
+            placeholder="Amount"
             keyboardType="numeric"
             maxLength={20}
             value={amountText}
